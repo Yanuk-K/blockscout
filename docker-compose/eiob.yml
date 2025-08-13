@@ -26,29 +26,17 @@ services:
     extends:
       file: ./services/backend.yml
       service: backend
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile
-      args:
-        RELEASE_VERSION: 9.0.1
     links:
       - db:database
     environment:
+        ETHEREUM_JSONRPC_VARIANT: 'nethermind'
         ETHEREUM_JSONRPC_HTTP_URL: https://rpc.eiob.xyz/
-        ETHEREUM_JSONRPC_TRACE_URL: https://rpc.eiob.xyz/
+        ETHEREUM_JSONRPC_HTTP_INSECURE: 'true'
+        ETHEREUM_JSONRPC_PENDING_TRANSACTIONS_TYPE: 'parity'
         CHAIN_ID: '612'
-
-  nft_media_handler:
-    depends_on:
-      - backend
-    extends:
-      file: ./services/nft_media_handler.yml
-      service: nft_media_handler
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile
-      args:
-        RELEASE_VERSION: 9.0.1
+        COIN: 'EIOB'
+        COIN_NAME: 'EIOB'
+        RE_CAPTCHA_DISABLED: 'true'
 
   visualizer:
     extends:
@@ -66,6 +54,16 @@ services:
     extends:
       file: ./services/frontend.yml
       service: frontend
+    environment:
+      NEXT_PUBLIC_NETWORK_ID: '612'
+      NEXT_PUBLIC_NETWORK_RPC_URL: https://rpc.eiob.xyz/
+      NEXT_PUBLIC_NETWORK_NAME: 'EIOB MAINNET'
+      NEXT_PUBLIC_NETWORK_SHORT_NAME: 'EIOB'
+      NEXT_PUBLIC_NETWORK_CURRENCY_NAME: 'EIOB'
+      NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL: 'EIOB'
+      NEXT_PUBLIC_AD_BANNER_PROVIDER: 'none'
+      NEXT_PUBLIC_AD_TEXT_PROVIDER: 'none'
+      NEXT_PUBLIC_IS_TESTNET: 'false'
 
   stats-db-init:
     extends:
